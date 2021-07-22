@@ -1,11 +1,6 @@
 package com.bakerbunker.npugpa
 
 import android.app.Application
-import android.content.Context
-import android.util.Log
-import androidx.datastore.dataStore
-import androidx.datastore.preferences.PreferencesProto
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,8 +14,8 @@ import okhttp3.FormBody
 import okhttp3.Request
 import org.jsoup.Jsoup
 
-const val LOGIN_URL = "http://us.nwpu.edu.cn/eams/login.action"
-const val SCORE_URL =
+private const val LOGIN_URL = "http://us.nwpu.edu.cn/eams/login.action"
+private const val SCORE_URL =
     "http://us.nwpu.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action"
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,7 +26,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val selectedCourse = mutableMapOf<String, MutableLiveData<Boolean>>()
     private val selectedSemester = mutableMapOf<String, MutableLiveData<Boolean>>()
-    val totalSum = MutableLiveData(ScoreSum(0.0, 0.0, 0.0))
+    private val _totalSum = MutableLiveData(ScoreSum(0.0, 0.0, 0.0))
+    val totalSum:LiveData<ScoreSum>
+        get() = _totalSum
     private val semesterSum = mutableMapOf<String, MutableLiveData<ScoreSum>>()
 
     suspend fun login(
@@ -42,7 +39,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     ) {
         _gpaList.clear()
         selectedCourse.clear()
-        totalSum.value = ScoreSum(0.0, 0.0, 0.0)
+        _totalSum.value = ScoreSum(0.0, 0.0, 0.0)
         semesterSum.clear()
         val loginRequest = Request.Builder().url(LOGIN_URL)
         if (account.isEmpty()) {
@@ -156,7 +153,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun selectCourse(course: Course): Boolean {
         if (selectedCourse[course.courseName]!!.value == true) return false
-        totalSum.value = totalSum.value!!.plus(course)
+        _totalSum.value = _totalSum.value!!.plus(course)
         semesterSum[course.semesterName]!!.value =
             semesterSum[course.semesterName]!!.value!!.plus(course)
         selectedCourse[course.courseName]!!.value = true
@@ -165,7 +162,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun unselectCourse(course: Course): Boolean {
         if (selectedCourse[course.courseName]!!.value == false) return false
-        totalSum.value = totalSum.value!!.minus(course)
+        _totalSum.value = _totalSum.value!!.minus(course)
         semesterSum[course.semesterName]!!.value =
             semesterSum[course.semesterName]!!.value!!.minus(course)
         selectedCourse[course.courseName]!!.value = false
@@ -183,7 +180,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun changeAllState() {
-        if (totalSum.value?.totalCredit==0.0) {
+        if (_totalSum.value?.totalCredit==0.0) {
             courseList.filter {!(it.courseType.contains("素养")||it.score.contains("P")) }
                 .forEach { course -> selectCourse(course) }
         } else {

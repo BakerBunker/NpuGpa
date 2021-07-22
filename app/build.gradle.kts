@@ -63,6 +63,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
 
+    //Accompanist
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.14.0")
+
     //datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0-rc01")
 

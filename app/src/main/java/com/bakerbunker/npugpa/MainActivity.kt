@@ -1,12 +1,17 @@
 package com.bakerbunker.npugpa
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.view.ViewGroup
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import com.bakerbunker.npugpa.ui.NpuGpaApp
@@ -21,6 +26,8 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window,false)
 
         setContent {
             NpuGpaApp()
