@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.FormBody
 import okhttp3.Request
 import org.jsoup.Jsoup
+import java.io.IOException
 
 private const val LOGIN_URL = "http://us.nwpu.edu.cn/eams/login.action"
 private const val SCORE_URL =
@@ -20,6 +21,7 @@ private const val SCORE_URL =
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val client = getApplication<NpuGpaApplication>().client
+    private val resources=getApplication<NpuGpaApplication>().resources
 
     private val _gpaList = mutableListOf<Course>()
     val courseList: List<Course> = _gpaList
@@ -43,17 +45,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         semesterSum.clear()
         val loginRequest = Request.Builder().url(LOGIN_URL)
         if (account.isEmpty()) {
-            onError("Student number cannot be empty")
+            onError(resources.getString(R.string.empty_student_number))
             return
         }
         if (password.isEmpty()) {
-            onError("Password cannot be empty")
+            onError(resources.getString(R.string.empty_password))
             return
-        }
-        withContext(Dispatchers.IO) {
-            if (!client.newCall(loginRequest.build()).execute().isSuccessful) {
-                onError("Network error")
-            }
         }
         val loginRequestBody = FormBody.Builder()
             .add("username", account)
@@ -62,34 +59,33 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             .add("session_locale", "zh_CN")
             .build()
         withContext(Dispatchers.IO) {
-            val response = client.newCall(loginRequest.post(loginRequestBody).build()).execute()
-            if (response.isSuccessful) {
-                val resposeString=response.body?.string() ?: ""
-                with(resposeString) {
-                    when {
-                        contains("密码错误") -> onError("Wrong Password")
-                        contains("账户不存在") -> onError("Invalid account")
-                        contains("验证码不正确") -> onError("Wrong validation code")
-                        contains("用户已经被锁定")-> onError("User has been locked, please login later")
-                        else -> {
-                            onSuccess()
+            try{
+                val response = client.newCall(loginRequest.post(loginRequestBody).build()).execute()
+                if (response.isSuccessful) {
+                    val resposeString = response.body?.string() ?: ""
+                    with(resposeString) {
+                        when {
+                            contains("密码错误") -> onError(resources.getString(R.string.wrong_password))
+                            contains("账户不存在") -> onError(resources.getString(R.string.invalid_account))
+                            contains("验证码不正确") -> onError(resources.getString(R.string.need_validation_code))
+                            contains("用户已经被锁定") -> onError(resources.getString(R.string.user_locked))
+                            else -> {
+                                onSuccess()
+                            }
                         }
                     }
                 }
-            } else {
-                onError("No network or timeout")
+                response.close()
+            }catch (e:IOException){
+                onError(resources.getString(R.string.network_timeout))
             }
-            response.close()
         }
     }
 
-    suspend fun queryGpa(onError: (String) -> Unit, onSuccess: () -> Unit,selectedCourses:Set<String>) {
+    suspend fun queryGpa(onSuccess: () -> Unit, selectedCourses: Set<String>) {
         val scoreQueryRequest = Request.Builder().url(SCORE_URL)
         val response =
             withContext(Dispatchers.IO) { client.newCall(scoreQueryRequest.build()).execute() }
-        if (!response.isSuccessful) {
-            onError("Failed to retrieve data")
-        }
 
         val body = withContext(Dispatchers.IO) {
             Jsoup.parse(response.body!!.string()).body()
@@ -104,7 +100,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val tempGpaList = mutableListOf<Course>()
         withContext(Dispatchers.Default) {
             for (scoreEntry in detailBody) {
-                if (scoreEntry.className().equals("script")) continue
+                if (scoreEntry.className() == "script") continue
                 val scoreEntryChildren = scoreEntry.children()
                 val course= Course(
                     scoreEntryChildren[nameMap["学年学期"]!!].text(),

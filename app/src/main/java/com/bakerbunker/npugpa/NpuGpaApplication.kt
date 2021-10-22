@@ -1,7 +1,6 @@
 package com.bakerbunker.npugpa
 
 import android.app.Application
-import android.util.Log
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl

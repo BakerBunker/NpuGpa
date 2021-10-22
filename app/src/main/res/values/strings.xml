@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">npugpa</string>
+    <string name="empty_student_number">Student number cannot be empty</string>
+    <string name="empty_password">Password cannot be empty</string>
+    <string name="network_timeout">Network error or timeout</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="invalid_account">Invalid account</string>
+    <string name="need_validation_code">Need validation code, please login later</string>
+    <string name="user_locked">User has been locked, please login later</string>
+    <string name="login_lowercase">login</string>
+    <string name="login_header">Login</string>
+    <string name="student_number">student number</string>
+    <string name="password">password</string>
+    <string name="press_back_again">Press back again to exit</string>
+    <string name="summary">Summary</string>
+    <string name="show_score">Show Score</string>
+    <string name="total_credit">Total credit</string>
+    <string name="avg_score">Avg score</string>
+    <string name="avg_gpa">Avg gpa</string>
 </resources>

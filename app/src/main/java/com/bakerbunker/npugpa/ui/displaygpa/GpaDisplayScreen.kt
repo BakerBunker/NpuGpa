@@ -20,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bakerbunker.npugpa.MainViewModel
+import com.bakerbunker.npugpa.R
 import com.bakerbunker.npugpa.model.Course
 import com.bakerbunker.npugpa.ui.component.StyledCard
 import com.bakerbunker.npugpa.ui.component.StyledTile
@@ -33,19 +35,18 @@ import com.bakerbunker.npugpa.util.SELECTED
 import com.bakerbunker.npugpa.util.dataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 val SHOW_SCORE = mutableStateOf(false)
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
-fun GpaDisplayScreen(navController: NavController, scaffoldState: ScaffoldState) {
+fun GpaDisplayScreen(navController: NavController) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     val viewModel = viewModel<MainViewModel>()
     val isCompleted = remember { mutableStateOf(false) }
-    val scaffoldScope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val totalSum = viewModel.totalSum.observeAsState()
 
     LaunchedEffect(true) {
@@ -53,15 +54,10 @@ fun GpaDisplayScreen(navController: NavController, scaffoldState: ScaffoldState)
             it[SELECTED] ?: ""
         }.first().split(" ").toSet()
         viewModel.queryGpa(
-            onError = { errorMessage ->
-                scaffoldScope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(errorMessage)
-                }
-            },
             onSuccess = {
                 isCompleted.value = true
             },
-            selectedCourses
+            selectedCourses = selectedCourses
         )
     }
 
@@ -75,7 +71,7 @@ fun GpaDisplayScreen(navController: NavController, scaffoldState: ScaffoldState)
                             it[SELECTED] = selected
                         }
                     }
-                    Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.press_back_again), Toast.LENGTH_SHORT).show()
                     isEnabled = false
                 } else {
                     navController.popBackStack()
@@ -129,11 +125,11 @@ fun GpaDisplayScreen(navController: NavController, scaffoldState: ScaffoldState)
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "Summary",
+                            text = stringResource(R.string.summary),
                             style = MaterialTheme.typography.h5,
                         )
                         Row {
-                            Text(text = "Show Score")
+                            Text(text = stringResource(R.string.show_score))
                             Spacer(modifier = Modifier.width(8.dp))
                             Switch(
                                 checked = SHOW_SCORE.value,
@@ -147,15 +143,15 @@ fun GpaDisplayScreen(navController: NavController, scaffoldState: ScaffoldState)
                     ) {
                         Column {
                             Text(
-                                text = "Total credit ${totalSum.value!!.totalCredit}",
+                                text = stringResource(R.string.total_credit)+' ' + totalSum.value!!.totalCredit,
                                 style = MaterialTheme.typography.subtitle2,
                             )
                             Text(
-                                text = "Avg score ${totalSum.value!!.avgScore.orHide()}",
+                                text = stringResource(R.string.avg_score)+' ' + totalSum.value!!.avgScore.orHide(),
                                 style = MaterialTheme.typography.subtitle2,
                             )
                             Text(
-                                text = "Avg gpa ${totalSum.value!!.avgGpa.orHide()}",
+                                text = stringResource(R.string.avg_gpa) +' '+ totalSum.value!!.avgGpa.orHide(),
                                 style = MaterialTheme.typography.subtitle2,
                             )
                         }
@@ -213,7 +209,7 @@ private fun SemesterCard(semesterName: String, courseList: List<Course>) {
             )
             AnimatedVisibility(visible = semesterSum.value?.totalCredit != 0.0) {
                 Text(
-                    text = "Total credit ${semesterSum.value!!.totalCredit}\nAvg score ${semesterSum.value!!.avgScore.orHide()}\nAvg gpa ${semesterSum.value!!.avgScore.orHide()}",
+                    text = "${stringResource(R.string.total_credit)} ${semesterSum.value!!.totalCredit}\n${stringResource(R.string.avg_score)} ${semesterSum.value!!.avgScore.orHide()}\n${stringResource(R.string.avg_gpa)} ${semesterSum.value!!.avgGpa.orHide()}",
                     //text = "Total credit ${semesterSum.value!!.totalCredit}\nAvg score ${semesterSum.value!!.avgScore}\nAvg gpa ${semesterSum.value!!.avgGpa}",
                     style = MaterialTheme.typography.subtitle2,
                     overflow = TextOverflow.Visible,

@@ -6,11 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.bakerbunker.npugpa.MainViewModel
+import com.bakerbunker.npugpa.R
 import com.bakerbunker.npugpa.ui.MainDestinations
 import com.bakerbunker.npugpa.util.ACCOUNT
 import com.bakerbunker.npugpa.util.PASSWORD
@@ -61,7 +63,7 @@ fun LoginScreen(navController: NavHostController, scaffoldState: ScaffoldState) 
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text("Login", style = MaterialTheme.typography.h3)
+            Text(stringResource(R.string.login_header), style = MaterialTheme.typography.h3)
             //Spacer(modifier = Modifier.padding(32.dp))
             LoginAccountField(account = accountText)
             //Spacer(modifier = Modifier.padding(32.dp))
@@ -99,7 +101,7 @@ fun LoginScreen(navController: NavHostController, scaffoldState: ScaffoldState) 
                         }
                     }
                 ) {
-                    Text("login")
+                    Text(stringResource(R.string.login_lowercase))
                 }
             } else {
                 CircularProgressIndicator()

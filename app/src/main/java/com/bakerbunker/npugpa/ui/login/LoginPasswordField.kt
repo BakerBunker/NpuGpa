@@ -13,10 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.bakerbunker.npugpa.R
 import com.bakerbunker.npugpa.ui.login.LoginAccountField
 
 @Composable
@@ -28,7 +30,7 @@ fun LoginPasswordField(password: MutableState<String>,isRemembered:Boolean,chang
     OutlinedTextField(
         value = password.value,
         onValueChange = { password.value = it },
-        label = { Text(text = "password") },
+        label = { Text(text = stringResource(R.string.password)) },
         singleLine = true,
         keyboardOptions= KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = if (visibility.value) VisualTransformation.None else PasswordVisualTransformation(),

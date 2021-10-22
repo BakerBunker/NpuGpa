@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">npugpa</string>
+    <string name="empty_student_number">学号不能为空</string>
+    <string name="empty_password">密码不能为空</string>
+    <string name="network_timeout">网络超时或错误</string>
+    <string name="wrong_password">密码错误</string>
+    <string name="invalid_account">学号错误</string>
+    <string name="need_validation_code">需要验证码，请稍后登录</string>
+    <string name="user_locked">用户已经被锁定，请稍后登录</string>
+    <string name="login_lowercase">登录</string>
+    <string name="login_header">登录</string>
+    <string name="student_number">学号</string>
+    <string name="password">密码</string>
+    <string name="press_back_again">再次点击返回退出</string>
+    <string name="show_score">显示分数</string>
+    <string name="total_credit">总学分</string>
+    <string name="avg_score">平均分数</string>
+    <string name="avg_gpa">平均绩点</string>
+    <string name="summary">概要</string>
+</resources>

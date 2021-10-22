@@ -8,15 +8,15 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.compose.rememberNavController
 import com.bakerbunker.npugpa.ui.theme.NpugpaTheme
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
 fun NpuGpaApp(){
-    val navController= rememberNavController()
+    val navController= rememberAnimatedNavController()
     val scaffoldState= rememberScaffoldState()
 
     val systemUiController= rememberSystemUiController()

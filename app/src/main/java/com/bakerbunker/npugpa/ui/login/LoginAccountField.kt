@@ -6,14 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.bakerbunker.npugpa.R
 
 @Composable
 fun LoginAccountField(account:MutableState<String>){
     OutlinedTextField(
         value = account.value,
         onValueChange = {account.value=it},
-        label = { Text(text = "student number") },
+        label = { Text(text = stringResource(R.string.student_number)) },
         singleLine = true,
     )
 }
